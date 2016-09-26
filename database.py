@@ -27,7 +27,7 @@ cur.executemany("INSERT INTO cities (name, state) VALUES (?,?)", cities)
 cur.executemany("INSERT INTO weather (city, year, warm_month, cold_month, average_high) \
 VALUES (?,?,?,?,?)", weather)
 
-#print list of warm_months and prompt user to choose month to display
+#print list of warm_months and ask user to choose the month
 cur.execute("SELECT DISTINCT warm_month FROM cities INNER JOIN weather")
 months = cur.fetchall()
 month_list = []
@@ -35,15 +35,14 @@ prompt_str = "Please choose the warm_month in the following list: ("
 for month in months:
     month_list.append(month[0])
     prompt_str = prompt_str + str(month[0]) + ", "
-prompt_str = prompt_str[:-2] + "): "
+prompt_str = prompt_str[:-2] + ")\n-> "
 month = raw_input(prompt_str)
 if month not in month_list:
-    raise ValueError("Please select a month from the list provided")
+    raise ValueError("Please select a month from the list")
 
 
 #join tables and load data in DataFrame
-#select city and state that have a specific warm_month
-'''uses SQL command to filter data'''
+#select city and state that have the warm_month chosen by the user
 cur.execute("SELECT city, state, warm_month FROM\
 (cities INNER JOIN weather ON name=city)\
 WHERE warm_month='{0}'".format(month))
@@ -52,13 +51,15 @@ rows = cur.fetchall()
 cols = [desc[0] for desc in cur.description]
 ds = pd.DataFrame(rows, columns=cols)
 
+#format the sentence to be printed
 sentence = "The cities that are warmest in {0} are: ".format(month)
 if len(ds) > 1:
     for index in xrange(len(ds) - 1):
-        sentence = sentence + str(ds.city[index]) + " ," + str(ds.state[index]) + ", "
+        sentence = sentence + str(ds.city[index]) + ", " + str(ds.state[index]) + ", "
     sentence = sentence + "and " + str(ds.city[len(ds)-1]) + ", " + str(ds.state[len(ds)-1]) + "."
 else:
     sentence = "The only city that is warmest in {0} is: ".format(month) + str(ds.city[0]) + " ," + str(ds.state[0]) + "."
 
+#print the final sentence
 print sentence
  
