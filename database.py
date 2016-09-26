@@ -35,7 +35,7 @@ prompt_str = "Please choose the warm_month in the following list: ("
 for month in months:
     month_list.append(month[0])
     prompt_str = prompt_str + str(month[0]) + ", "
-prompt_str = prompt_str[:-2] + ")\n-> "
+prompt_str = prompt_str[:-2] + ") and press [ENTER]\n-> "
 month = raw_input(prompt_str)
 if month not in month_list:
     raise ValueError("Please select a month from the list")
@@ -62,4 +62,3 @@ else:
 
 #print the final sentence
 print sentence
- 
