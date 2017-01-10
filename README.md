@@ -1,1 +1,1 @@
-Unit 1 of Thinkful data science course
+# Basics of Python, Pandas, Git&GitHub, SQL
